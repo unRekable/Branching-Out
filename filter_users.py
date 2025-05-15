@@ -20,6 +20,7 @@ def filter_users_by_age(search_age):
     for user in filtered_users:
         print(user)
 
+        
 def filter_users_by_mail(search_mail):
     with open("users.json", "r") as file:
         users = json.load(file)

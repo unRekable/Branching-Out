@@ -1,47 +1,118 @@
 import json
 
+"""
+This script filters a list of users from a JSON file
+based on name, age, or email address.
+"""
+
 
 def filter_users_by_name(name):
-    with open("users.json", "r") as file:
-        users = json.load(file)
+    """
+    Filters users from 'users.json' by name (case-insensitive).
 
-    filtered_users = [user for user in users if user["name"].lower() == name.lower()]
+    Args:
+        name (str): The name to filter by.
+    """
+    try:
+        with open("users.json", "r") as file:
+            users = json.load(file)
+    except FileNotFoundError:
+        print("Error: The file 'users.json' was not found.")
+        return
+    except json.JSONDecodeError:
+        print("Error: The file 'users.json' contains invalid JSON.")
+        return
 
-    for user in filtered_users:
-        print(user)
+    filtered_users = [
+        user for user in users if user.get("name", "").lower() == name.lower()
+    ]
+
+    if not filtered_users:
+        print(f"No users found with the name '{name}'.")
+    else:
+        for user in filtered_users:
+            print(user)
 
 
 def filter_users_by_age(search_age):
-    with open("users.json", "r") as file:
-        users = json.load(file)
+    """
+    Filters users from 'users.json' by age.
 
-    filtered_users = [age for age in users if age["age"] == search_age]
+    Args:
+        search_age (int): The age to filter by.
+    """
+    try:
+        with open("users.json", "r") as file:
+            users = json.load(file)
+    except FileNotFoundError:
+        print("Error: The file 'users.json' was not found.")
+        return
+    except json.JSONDecodeError:
+        print("Error: The file 'users.json' contains invalid JSON.")
+        return
 
-    for user in filtered_users:
-        print(user)
+    filtered_users = [
+        user for user in users if isinstance(user.get("age"), int) and user["age"] == search_age
+    ]
 
-        
+    if not filtered_users:
+        print(f"No users found with the age '{search_age}'.")
+    else:
+        for user in filtered_users:
+            print(user)
+
+
 def filter_users_by_mail(search_mail):
-    with open("users.json", "r") as file:
-        users = json.load(file)
+    """
+    Filters users from 'users.json' by email address (case-insensitive).
 
-    filtered_users = [mail for mail in users if mail["email"] == search_mail]
+    Args:
+        search_mail (str): The email address to filter by.
+    """
+    try:
+        with open("users.json", "r") as file:
+            users = json.load(file)
+    except FileNotFoundError:
+        print("Error: The file 'users.json' was not found.")
+        return
+    except json.JSONDecodeError:
+        print("Error: The file 'users.json' contains invalid JSON.")
+        return
 
-    for user in filtered_users:
-        print(user)
+    filtered_users = [
+        user for user in users if user.get("email", "").lower() == search_mail.lower()
+    ]
+
+    if not filtered_users:
+        print(f"No users found with the email address '{search_mail}'.")
+    else:
+        for user in filtered_users:
+            print(user)
 
 
 if __name__ == "__main__":
-    filter_option = input("What would you like to filter by? (name/age/mail): ").strip().lower()
+    filter_option = input(
+        "What would you like to filter by? (name/age/mail): "
+    ).strip().lower()
 
     if filter_option == "name":
         name_to_search = input("Enter a name to filter users: ").strip()
-        filter_users_by_name(name_to_search)
+        if name_to_search:
+            filter_users_by_name(name_to_search)
+        else:
+            print("No name entered.")
     elif filter_option == "age":
-        age_to_search = int(input("Enter an age to filter users: ").strip())
-        filter_users_by_age(age_to_search)
+        age_input = input("Enter an age to filter users: ").strip()
+        if age_input.isdigit():
+            age_to_search = int(age_input)
+            filter_users_by_age(age_to_search)
+        else:
+            print("Invalid age input. Please enter a number.")
     elif filter_option == "mail":
         email_to_search = input("Enter an email to filter users: ").strip()
-        filter_users_by_mail(email_to_search)
+        if email_to_search:
+            filter_users_by_mail(email_to_search)
+        else:
+            print("No email entered.")
     else:
         print("Filtering by that option is not yet supported.")
